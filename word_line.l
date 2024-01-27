@@ -1,32 +1,29 @@
 %{
 #include<stdio.h>
-#include<string.h>
-
-int i = 0;
-int nchar, nword, nline;
+int sc=0, wc=0, lc=0, cc=0;
 %}
 %%
-\n { nline++; nchar++; }
-[^ \t\n]+ { nword++, nchar += yyleng; }
-. { nchar++; }
+[\n] { lc++; cc+=yyleng;}
+[ \t] { sc++; cc+=yyleng; }
+[^\t\n ]+ { wc++; cc+=yyleng;}
 %%
-
-int yywrap(void){}
-
-int main(int argc, char* argv[])
-{   FILE *fh;
-    if (argc == 2 && (fh = fopen(argv[1], "r")))
-       { yyin = fh;
-        while(yylex()); 
-        fclose(fh);
-        printf("%d\t%d\t%d\n", nchar, nword, nline+1);
-       
-       }
-    else{
-            yylex();
-            printf("%d\t%d\t%d\n", nchar, nword, nline);
-        }
-   
-   
-    return 0;
+int main(int argc ,char* argv[])
+{
+    if(argc==2){
+        yyin=fopen(argv[1], "r");
     }
+    else
+    {
+        printf("Enter the input\n");
+        yyin=stdin;
+    }
+    yylex();
+    printf("The number of lines=%d\n",lc);
+    printf("The number of spaces=%d\n",sc);
+    printf("The number of words=%d\n", wc);
+    printf("The number of characters are=%d \n" ,cc);
+}
+int yywrap( )
+{
+    return 1;
+}
